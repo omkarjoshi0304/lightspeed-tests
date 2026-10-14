@@ -157,6 +157,8 @@ spec:
     # Lightspeed service URL (defaults to in-cluster service)
     lightspeed_url: "https://lightspeed-app-server.openstack-lightspeed.svc.cluster.local:8443"
     lightspeed_timeout: 30
+    # Same value as the Goose container's LIGHTSPEED_MODEL
+    lightspeed_model: "<your configured model>"
     test_question: "What is OpenStack?"
     # Pytest options
     pytest_args: "-v --tb=short --color=yes"

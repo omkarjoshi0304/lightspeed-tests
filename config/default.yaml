@@ -6,3 +6,7 @@ rhos_lightspeed:
 
 query:
   default_question: "What is OpenStack?"
+
+goose:
+  # Set RHOS_LIGHTSPEED_MODEL to the Goose container's LIGHTSPEED_MODEL value.
+  model: ""

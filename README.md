@@ -48,6 +48,44 @@ uv run pytest tests/integration/
 uv run pytest  # outputs test-results.xml
 ```
 
+## Goose API integration tests
+
+The Goose tests simulate the HTTP requests made by the OpenStack Goose image
+against a deployed Lightspeed service. They exercise `/v1/responses` using
+structured messages, streaming, `store: false`, Bearer authentication, and
+`X-LCS-Merge-Server-Tools: true`. They do not launch the Goose container.
+
+The contract follows the pinned
+[container entrypoint](https://github.com/openstack-k8s-operators/s2i-openstack-containers/blob/5f1ddc43e54607f1b8e2a5b0101be1109bf11115/containers/goose/goose/openstack-goose-entrypoint.sh)
+and the
+[Goose Responses serializer](https://github.com/aaif-goose/goose/blob/61830521ad3134fe1ffa32f62d95ede205216bfc/crates/goose-provider-types/src/formats/openai_responses.rs).
+
+Set `RHOS_LIGHTSPEED_URL` to the service origin (without `/v1`) and supply the
+token through `RHOS_LIGHTSPEED_TOKEN`, as for the existing integration tests.
+Set `RHOS_LIGHTSPEED_MODEL` to the same value as the Goose container's
+`LIGHTSPEED_MODEL`; alternatively, set `goose.model` in `config/default.yaml`.
+The Goose tests fail with a configuration message if no model is supplied.
+
+```bash
+export RHOS_LIGHTSPEED_MODEL="<same value as Goose LIGHTSPEED_MODEL>"
+uv run pytest tests/integration/test_goose_responses.py
+```
+
+The three scenarios cover a simple OpenStack question, a follow-up with replayed
+message history, and a question with a Goose client function tool attached.
+Assertions check successful stream completion, structured assistant text, and
+retention of the client tool, with broad OpenStack checks instead of exact
+generated wording. The history scenario supplies a unique OpenStack project
+name only in the first turn and requires the follow-up to recall it.
+
+The client-tool scenario supports inline OKP retrieval without server-configured
+tools. Inline retrieval does not require a response tool entry, and Lightspeed
+can hide server MCP tools from client responses. This scenario checks client
+tool compatibility; it does not establish server-tool merging or tool execution.
+
+When using the test-operator playbook, supply `lightspeed_model` in your
+`AnsibleTest` variables. It is forwarded as `RHOS_LIGHTSPEED_MODEL`.
+
 ## Adding tests
 
 1. Create test file in appropriate directory:

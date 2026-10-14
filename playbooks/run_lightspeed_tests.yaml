@@ -6,6 +6,8 @@
     # Default variables (can be overridden via AnsibleTest CR)
     lightspeed_url: "https://lightspeed-app-server.openstack-lightspeed.svc.cluster.local:8443"
     lightspeed_timeout: 30
+    # Match the Goose container's LIGHTSPEED_MODEL for the Goose API tests.
+    lightspeed_model: ""
     test_question: "What is OpenStack?"
     pytest_args: "-v --tb=short --color=yes"
     # Test-operator provides writable storage at this location
@@ -91,6 +93,7 @@
         test_env:
           RHOS_LIGHTSPEED_URL: "{{ lightspeed_url }}"
           RHOS_LIGHTSPEED_TOKEN: "{{ lightspeed_token }}"
+          RHOS_LIGHTSPEED_MODEL: "{{ lightspeed_model }}"
           PYTHONUNBUFFERED: "1"
           PATH: "{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
 

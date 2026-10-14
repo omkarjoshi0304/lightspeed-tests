@@ -27,6 +27,20 @@ class RHOSLightspeedClient:
             timeout=self.timeout,
         )
 
+    def responses(
+        self,
+        payload: dict,
+        headers: dict[str, str] | None = None,
+    ) -> requests.Response:
+        """Send a Responses API request; callers must close streamed responses."""
+        return self.session.post(
+            f"{self.base_url}{self.api_prefix}/responses",
+            json=payload,
+            headers=headers,
+            stream=payload.get("stream", False),
+            timeout=self.timeout,
+        )
+
     def metrics(self) -> requests.Response:
         return self.session.get(
             f"{self.base_url}/metrics",

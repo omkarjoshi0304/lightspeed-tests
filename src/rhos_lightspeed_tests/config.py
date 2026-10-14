@@ -25,4 +25,7 @@ def load_config(config_path: str | None = None) -> dict:
         "",
     )
 
+    goose = config.setdefault("goose", {})
+    goose["model"] = os.environ.get("RHOS_LIGHTSPEED_MODEL", goose.get("model", ""))
+
     return config
